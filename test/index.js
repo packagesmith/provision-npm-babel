@@ -247,6 +247,39 @@ describe('provisionNpmBabel', () => {
           });
       });
 
+      it('overrides `plugins` with `babelPlugins` option', () => {
+        subFunction = provisionNpmBabel({
+          babelVersion: 6,
+          babelPlugins: {
+            'transform-regenerator': '^1.2.3',
+          },
+        })['package.json'].contents;
+
+        JSON.parse(subFunction('{}'))
+          .should.deep.equal({
+            directories: {
+              lib: 'lib',
+              src: 'src',
+            },
+            devDependencies: {
+              'babel-cli': '^6.5.1',
+              'babel-core': '^6.5.2',
+              'babel-preset-es2015': '^6.5.0',
+              'babel-plugin-transform-regenerator': '^1.2.3',
+            },
+            babel: {
+              compact: false,
+              ignore: 'node_modules',
+              presets: [ 'es2015' ],
+              plugins: [ 'transform-regenerator' ],
+              sourceMaps: 'inline',
+            },
+            scripts: {
+              'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
+            },
+          });
+      });
+
       it('changes scripts name with `scriptName` option', () => {
         subFunction = provisionNpmBabel({
           babelVersion: 6,

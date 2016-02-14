@@ -9,6 +9,7 @@ export function provisionNpmBabel({
   scriptName = 'prepublish',
   babelVersion,
   babelStage,
+  babelPlugins = {},
   babelPresets = null,
 } = {}) {
   return {
@@ -53,6 +54,15 @@ export function provisionNpmBabel({
             packageJson.devDependencies[longhand] = babelPresets[preset];
             packageJson.babel.presets.push(shorthand);
           });
+          const plugins = Object.keys(babelPlugins).map((plugin) => {
+            const shorthand = plugin.replace(/^babel-plugin-/, '');
+            const longhand = `babel-plugin-${ shorthand }`;
+            packageJson.devDependencies[longhand] = babelPlugins[plugin];
+            return shorthand;
+          });
+          if (plugins.length) {
+            packageJson.babel.plugins = plugins;
+          }
         }
         return sortPackageJson(defaultsDeep(packageJson, contents, {
           directories: {
