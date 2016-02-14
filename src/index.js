@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import jsonFile from 'packagesmith.formats.json';
 import defaultsDeep from 'lodash.defaultsdeep';
+import jsonFile from 'packagesmith.formats.json';
 import { runProvisionerSet } from 'packagesmith';
 import sortPackageJson from 'sort-package-json';
 const babelVersionFive = 5;
@@ -29,7 +29,7 @@ export function provisionNpmBabel(config) {
           const presets = config.babelPresets || { 'es2015': '^6.3.13' };
           Object.keys(presets).forEach((preset) => {
             const shorthand = preset.replace(/^babel-preset-/, '');
-            const longhand = `babel-preset-${shorthand}`;
+            const longhand = `babel-preset-${ shorthand }`;
             packageJson.devDependencies[longhand] = presets[preset];
             packageJson.babel.presets.push(shorthand);
           });
@@ -47,5 +47,6 @@ export function provisionNpmBabel(config) {
 export default provisionNpmBabel;
 
 if (require.main === module) {
-  runProvisionerSet(process.argv[2] || '.', provisionNpmBabel());
+  const directoryArgPosition = 2;
+  runProvisionerSet(process.argv[directoryArgPosition] || '.', provisionNpmBabel());
 }
