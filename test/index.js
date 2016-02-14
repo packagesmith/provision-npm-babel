@@ -122,6 +122,33 @@ describe('provisionNpmBabel', () => {
           });
       });
 
+      it('adds stage option when given `babelStage` number', () => {
+        subFunction = provisionNpmBabel({
+          babelVersion: 5,
+          babelStage: 2,
+        })['package.json'].contents;
+
+        JSON.parse(subFunction('{}'))
+          .should.deep.equal({
+            directories: {
+              lib: 'lib',
+              src: 'src',
+            },
+            devDependencies: {
+              babel: '^5.8.34',
+            },
+            babel: {
+              compact: false,
+              ignore: 'node_modules',
+              sourceMaps: 'inline',
+              stage: 2,
+            },
+            scripts: {
+              'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
+            },
+          });
+      });
+
     });
 
     describe('with babelVersion 6', () => {
@@ -245,6 +272,35 @@ describe('provisionNpmBabel', () => {
             },
             scripts: {
               'build:js': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
+            },
+          });
+      });
+
+      it('adds stage preset when given `babelStage` number without presets', () => {
+        subFunction = provisionNpmBabel({
+          babelStage: 2,
+        })['package.json'].contents;
+
+        JSON.parse(subFunction('{}'))
+          .should.deep.equal({
+            directories: {
+              lib: 'lib',
+              src: 'src',
+            },
+            devDependencies: {
+              'babel-cli': '^6.5.1',
+              'babel-core': '^6.5.2',
+              'babel-preset-es2015': '^6.5.0',
+              'babel-preset-stage-2': '^6.5.0',
+            },
+            babel: {
+              presets: [ 'es2015', 'stage-2' ],
+              compact: false,
+              ignore: 'node_modules',
+              sourceMaps: 'inline',
+            },
+            scripts: {
+              'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
             },
           });
       });

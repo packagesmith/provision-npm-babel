@@ -8,6 +8,7 @@ export function provisionNpmBabel({
   babelConfig,
   scriptName = 'prepublish',
   babelVersion,
+  babelStage,
   babelPresets = null,
 } = {}) {
   return {
@@ -27,9 +28,21 @@ export function provisionNpmBabel({
         };
         if (babelVersion === babelVersionFive) {
           packageJson.devDependencies.babel = '^5.8.34';
+          if (typeof babelStage === 'number') {
+            packageJson.babel.stage = babelStage;
+          }
         } else {
+          if ('babel' in packageJson.devDependencies) {
+            Reflect.deleteProperty(packageJson.devDependencies, 'babel');
+            Reflect.deleteProperty(packageJson.babel, 'loose');
+            babelStage = packageJson.babel.stage;
+            Reflect.deleteProperty(packageJson.babel, 'stage');
+          }
           if (!babelPresets) {
             babelPresets = { 'es2015': '^6.5.0' };
+            if (typeof babelStage === 'number') {
+              babelPresets[`stage-${ babelStage }`] = '^6.5.0';
+            }
           }
           packageJson.devDependencies['babel-cli'] = '^6.5.1';
           packageJson.devDependencies['babel-core'] = '^6.5.2';
