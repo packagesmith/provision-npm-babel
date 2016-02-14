@@ -53,10 +53,10 @@ export function provisionNpmBabel({
           configureBabelFive(packageJson, babelStage, babelRuntime);
         } else {
           if ('babel' in packageJson.devDependencies) {
-            Reflect.deleteProperty(packageJson.devDependencies, 'babel');
-            Reflect.deleteProperty(packageJson.babel, 'loose');
+            delete packageJson.devDependencies.babel;
+            delete packageJson.babel.loose;
             babelStage = packageJson.babel.stage;
-            Reflect.deleteProperty(packageJson.babel, 'stage');
+            delete packageJson.babel.stage;
           }
           if (!babelPresets) {
             babelPresets = defaultBabelPresets(babelStage);

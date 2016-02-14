@@ -41,7 +41,10 @@
   },
   "eslintConfig": {
     "extends": "strict",
-    "parser": "babel-eslint"
+    "parser": "babel-eslint",
+    "rules": {
+      "prefer-reflect": 0
+    }
   },
   "dependencies": {
     "lodash.defaultsdeep": "^4.1.0",
