@@ -51,7 +51,7 @@
     "lodash.uniq": "^4.1.0",
     "packagesmith": "^1.0.0",
     "packagesmith.formats.json": "^1.0.1",
-    "sort-package-json": "^1.2.0"
+    "sort-package-json": "^1.3.0"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
