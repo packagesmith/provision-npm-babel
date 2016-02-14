@@ -7,7 +7,8 @@
   "license": "MIT",
   "author": "Keith Cirkel (http://keithcirkel.co.uk)",
   "files": [
-    "lib/"
+    "lib/",
+    "versions.json"
   ],
   "main": "lib/index.js",
   "bin": "lib/index.js",

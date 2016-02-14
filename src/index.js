@@ -4,22 +4,23 @@ import jsonFile from 'packagesmith.formats.json';
 import { runProvisionerSet } from 'packagesmith';
 import sortPackageJson from 'sort-package-json';
 import unique from 'lodash.uniq';
+import versions from '../versions';
 const babelVersionFive = 5;
 function configureBabelFive(packageJson, babelStage, babelRuntime) {
-  packageJson.devDependencies.babel = '^5.8.34';
+  packageJson.devDependencies.babel = versions.five.babel;
   if (typeof babelStage === 'number') {
     packageJson.babel.stage = babelStage;
   }
   if (babelRuntime) {
     packageJson.babel.optional = unique([ ...(packageJson.babel.optional || []), 'runtime' ]);
     packageJson.dependencies = packageJson.dependencies || {};
-    packageJson.dependencies['babel-runtime'] = '^6.3.19';
+    packageJson.dependencies['babel-runtime'] = versions.five['babel-runtime'];
   }
 }
 function defaultBabelPresets(stage) {
-  const presets = { 'es2015': '^6.5.0' };
+  const presets = { 'es2015': versions.six['babel-preset-es2015'] };
   if (typeof stage === 'number') {
-    presets[`stage-${ stage }`] = '^6.5.0';
+    presets[`stage-${ stage }`] = versions.six['babel-preset-es2015'];
   }
   return presets;
 }
@@ -62,11 +63,15 @@ export function provisionNpmBabel({
           }
           if (babelRuntime) {
             packageJson.dependencies = packageJson.dependencies || {};
-            packageJson.dependencies['babel-runtime'] = packageJson.dependencies['babel-runtime'] || '^6.3.19';
-            babelPlugins['transform-runtime'] = babelPlugins['transform-runtime'] || '^6.5.2';
+            if (!packageJson.dependencies['babel-runtime']) {
+              packageJson.dependencies['babel-runtime'] = versions.six['babel-runtime'];
+            }
+            if (!babelPlugins['transform-runtime']) {
+              babelPlugins['transform-runtime'] = versions.six['babel-plugin-transform-runtime'];
+            }
           }
-          packageJson.devDependencies['babel-cli'] = '^6.5.1';
-          packageJson.devDependencies['babel-core'] = '^6.5.2';
+          packageJson.devDependencies['babel-cli'] = versions.six['babel-cli'];
+          packageJson.devDependencies['babel-core'] = versions.six['babel-core'];
           packageJson.babel.presets = [];
           Object.keys(babelPresets).forEach((preset) => {
             const shorthand = preset.replace(/^babel-preset-/, '');

@@ -1,6 +1,7 @@
 import chai from 'chai';
 chai.should();
 import provisionNpmBabel from '../src/';
+import versions from '../versions';
 describe('provisionNpmBabel', () => {
 
   it('returns an object with `package.json`.`contents` function', () => {
@@ -34,7 +35,7 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              babel: '^5.8.34',
+              babel: versions.five.babel || 'NO VERSION',
             },
             babel: {
               compact: false,
@@ -55,7 +56,7 @@ describe('provisionNpmBabel', () => {
               src: 'bar',
             },
             devDependencies: {
-              babel: '^5.8.34',
+              babel: versions.five.babel || 'NO VERSION',
             },
             babel: {
               compact: false,
@@ -84,7 +85,7 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              babel: '^5.8.34',
+              babel: versions.five.babel || 'NO VERSION',
             },
             babel: {
               compact: true,
@@ -109,7 +110,7 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              babel: '^5.8.34',
+              babel: versions.five.babel || 'NO VERSION',
             },
             babel: {
               compact: false,
@@ -135,7 +136,7 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              babel: '^5.8.34',
+              babel: versions.five.babel || 'NO VERSION',
             },
             babel: {
               compact: false,
@@ -162,10 +163,10 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              babel: '^5.8.34',
+              babel: versions.five.babel || 'NO VERSION',
             },
             dependencies: {
-              'babel-runtime': '^6.3.19',
+              'babel-runtime': versions.five['babel-runtime'] || 'NO VERSION',
             },
             babel: {
               compact: false,
@@ -196,9 +197,9 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.5.1',
-              'babel-core': '^6.5.2',
-              'babel-preset-es2015': '^6.5.0',
+              'babel-cli': versions.six['babel-cli'] || 'NO VERSION',
+              'babel-core': versions.six['babel-core'] || 'NO VERSION',
+              'babel-preset-es2015': versions.six['babel-preset-es2015'] || 'NO VERSION',
             },
             babel: {
               presets: [ 'es2015' ],
@@ -227,9 +228,9 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.5.1',
-              'babel-core': '^6.5.2',
-              'babel-preset-es2015': '^6.5.0',
+              'babel-cli': versions.six['babel-cli'] || 'NO VERSION',
+              'babel-core': versions.six['babel-core'] || 'NO VERSION',
+              'babel-preset-es2015': versions.six['babel-preset-es2015'] || 'NO VERSION',
             },
             babel: {
               presets: [ 'es2015' ],
@@ -261,8 +262,8 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.5.1',
-              'babel-core': '^6.5.2',
+              'babel-cli': versions.six['babel-cli'] || 'NO VERSION',
+              'babel-core': versions.six['babel-core'] || 'NO VERSION',
               'babel-preset-es2015': '^1.2.3',
               'babel-preset-stage-0': '^4.5.6',
               'babel-preset-react': '^7.8.9',
@@ -292,9 +293,9 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.5.1',
-              'babel-core': '^6.5.2',
-              'babel-preset-es2015': '^6.5.0',
+              'babel-cli': versions.six['babel-cli'] || 'NO VERSION',
+              'babel-core': versions.six['babel-core'] || 'NO VERSION',
+              'babel-preset-es2015': versions.six['babel-preset-es2015'] || 'NO VERSION',
               'babel-plugin-transform-regenerator': '^1.2.3',
             },
             babel: {
@@ -323,9 +324,9 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.5.1',
-              'babel-core': '^6.5.2',
-              'babel-preset-es2015': '^6.5.0',
+              'babel-cli': versions.six['babel-cli'] || 'NO VERSION',
+              'babel-core': versions.six['babel-core'] || 'NO VERSION',
+              'babel-preset-es2015': versions.six['babel-preset-es2015'] || 'NO VERSION',
             },
             babel: {
               presets: [ 'es2015' ],
@@ -351,10 +352,10 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.5.1',
-              'babel-core': '^6.5.2',
-              'babel-preset-es2015': '^6.5.0',
-              'babel-preset-stage-2': '^6.5.0',
+              'babel-cli': versions.six['babel-cli'] || 'NO VERSION',
+              'babel-core': versions.six['babel-core'] || 'NO VERSION',
+              'babel-preset-es2015': versions.six['babel-preset-es2015'] || 'NO VERSION',
+              'babel-preset-stage-2': versions.six['babel-preset-stage-2'] || 'NO VERSION',
             },
             babel: {
               presets: [ 'es2015', 'stage-2' ],
@@ -380,13 +381,13 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             dependencies: {
-              'babel-runtime': '^6.3.19',
+              'babel-runtime': versions.six['babel-runtime'] || 'NO VERSION',
             },
             devDependencies: {
-              'babel-cli': '^6.5.1',
-              'babel-core': '^6.5.2',
-              'babel-preset-es2015': '^6.5.0',
-              'babel-plugin-transform-runtime': '^6.5.2',
+              'babel-cli': versions.six['babel-cli'] || 'NO VERSION',
+              'babel-core': versions.six['babel-core'] || 'NO VERSION',
+              'babel-preset-es2015': versions.six['babel-preset-es2015'] || 'NO VERSION',
+              'babel-plugin-transform-runtime': versions.six['babel-plugin-transform-runtime'] || 'NO VERSION',
             },
             babel: {
               presets: [ 'es2015' ],
