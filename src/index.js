@@ -25,6 +25,18 @@ function defaultBabelPresets(stage) {
   return presets;
 }
 
+function configurePlugins(packageJson, babelPlugins) {
+  const plugins = Object.keys(babelPlugins).map((plugin) => {
+    const shorthand = plugin.replace(/^babel-plugin-/, '');
+    const longhand = `babel-plugin-${ shorthand }`;
+    packageJson.devDependencies[longhand] = babelPlugins[plugin];
+    return shorthand;
+  });
+  if (plugins.length) {
+    packageJson.babel.plugins = plugins;
+  }
+}
+
 export function provisionNpmBabel({
   babelConfig,
   scriptName = 'prepublish',
@@ -52,11 +64,11 @@ export function provisionNpmBabel({
         if (babelVersion === babelVersionFive) {
           configureBabelFive(packageJson, babelStage, babelRuntime);
         } else {
-          if ('babel' in packageJson.devDependencies) {
-            delete packageJson.devDependencies.babel;
-            delete packageJson.babel.loose;
-            babelStage = packageJson.babel.stage;
-            delete packageJson.babel.stage;
+          // Detect and remove old babel 5 config
+          if ('babel' in (contents.devDependencies || {})) {
+            delete contents.devDependencies.babel;
+            babelStage = contents.babel.stage;
+            delete contents.babel.stage;
           }
           if (!babelPresets) {
             babelPresets = defaultBabelPresets(babelStage);
@@ -79,15 +91,7 @@ export function provisionNpmBabel({
             packageJson.devDependencies[longhand] = babelPresets[preset];
             packageJson.babel.presets.push(shorthand);
           });
-          const plugins = Object.keys(babelPlugins).map((plugin) => {
-            const shorthand = plugin.replace(/^babel-plugin-/, '');
-            const longhand = `babel-plugin-${ shorthand }`;
-            packageJson.devDependencies[longhand] = babelPlugins[plugin];
-            return shorthand;
-          });
-          if (plugins.length) {
-            packageJson.babel.plugins = plugins;
-          }
+          configurePlugins(packageJson, babelPlugins);
         }
         return sortPackageJson(defaultsDeep(packageJson, contents, {
           directories: {

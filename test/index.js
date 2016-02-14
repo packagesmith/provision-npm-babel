@@ -189,6 +189,35 @@ describe('provisionNpmBabel', () => {
         })['package.json'].contents;
       });
 
+      it('upgrades babel5 to babel6', () => {
+        JSON.parse(subFunction(JSON.stringify({
+          babel: {},
+          devDependencies: {
+            babel: '^5',
+          },
+        })))
+          .should.deep.equal({
+            directories: {
+              lib: 'lib',
+              src: 'src',
+            },
+            devDependencies: {
+              'babel-cli': versions.six['babel-cli'] || 'NO VERSION',
+              'babel-core': versions.six['babel-core'] || 'NO VERSION',
+              'babel-preset-es2015': versions.six['babel-preset-es2015'] || 'NO VERSION',
+            },
+            babel: {
+              presets: [ 'es2015' ],
+              compact: false,
+              ignore: 'node_modules',
+              sourceMaps: 'inline',
+            },
+            scripts: {
+              'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
+            },
+          });
+      });
+
       it('adds babel directives to json', () => {
         JSON.parse(subFunction('{}'))
           .should.deep.equal({
@@ -346,6 +375,38 @@ describe('provisionNpmBabel', () => {
         })['package.json'].contents;
 
         JSON.parse(subFunction('{}'))
+          .should.deep.equal({
+            directories: {
+              lib: 'lib',
+              src: 'src',
+            },
+            devDependencies: {
+              'babel-cli': versions.six['babel-cli'] || 'NO VERSION',
+              'babel-core': versions.six['babel-core'] || 'NO VERSION',
+              'babel-preset-es2015': versions.six['babel-preset-es2015'] || 'NO VERSION',
+              'babel-preset-stage-2': versions.six['babel-preset-stage-2'] || 'NO VERSION',
+            },
+            babel: {
+              presets: [ 'es2015', 'stage-2' ],
+              compact: false,
+              ignore: 'node_modules',
+              sourceMaps: 'inline',
+            },
+            scripts: {
+              'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
+            },
+          });
+      });
+
+      it('adds stage preset when detected from babel5 config', () => {
+        JSON.parse(subFunction(JSON.stringify({
+          babel: {
+            stage: 2,
+          },
+          devDependencies: {
+            babel: '^5',
+          },
+        })))
           .should.deep.equal({
             directories: {
               lib: 'lib',
