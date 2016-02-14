@@ -23,10 +23,10 @@ export function provisionNpmBabel(config) {
         if (config.babelVersion === babelVersionFive) {
           packageJson.devDependencies.babel = '^5.8.34';
         } else {
-          packageJson.devDependencies['babel-cli'] = '^6.3.17';
-          packageJson.devDependencies['babel-core'] = '^6.3.26';
+          packageJson.devDependencies['babel-cli'] = '^6.5.1';
+          packageJson.devDependencies['babel-core'] = '^6.5.2';
           packageJson.babel.presets = [];
-          const presets = config.babelPresets || { 'es2015': '^6.3.13' };
+          const presets = config.babelPresets || { 'es2015': '^6.5.0' };
           Object.keys(presets).forEach((preset) => {
             const shorthand = preset.replace(/^babel-preset-/, '');
             const longhand = `babel-preset-${ shorthand }`;

@@ -139,9 +139,9 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.3.17',
-              'babel-core': '^6.3.26',
-              'babel-preset-es2015': '^6.3.13',
+              'babel-cli': '^6.5.1',
+              'babel-core': '^6.5.2',
+              'babel-preset-es2015': '^6.5.0',
             },
             babel: {
               presets: [ 'es2015' ],
@@ -170,9 +170,9 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.3.17',
-              'babel-core': '^6.3.26',
-              'babel-preset-es2015': '^6.3.13',
+              'babel-cli': '^6.5.1',
+              'babel-core': '^6.5.2',
+              'babel-preset-es2015': '^6.5.0',
             },
             babel: {
               presets: [ 'es2015' ],
@@ -204,8 +204,8 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.3.17',
-              'babel-core': '^6.3.26',
+              'babel-cli': '^6.5.1',
+              'babel-core': '^6.5.2',
               'babel-preset-es2015': '^1.2.3',
               'babel-preset-stage-0': '^4.5.6',
               'babel-preset-react': '^7.8.9',
@@ -233,9 +233,9 @@ describe('provisionNpmBabel', () => {
               src: 'src',
             },
             devDependencies: {
-              'babel-cli': '^6.3.17',
-              'babel-core': '^6.3.26',
-              'babel-preset-es2015': '^6.3.13',
+              'babel-cli': '^6.5.1',
+              'babel-core': '^6.5.2',
+              'babel-preset-es2015': '^6.5.0',
             },
             babel: {
               presets: [ 'es2015' ],
