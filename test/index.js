@@ -149,6 +149,36 @@ describe('provisionNpmBabel', () => {
           });
       });
 
+      it('adds runtime option when `babelRuntime` is truthy', () => {
+        subFunction = provisionNpmBabel({
+          babelVersion: 5,
+          babelRuntime: true,
+        })['package.json'].contents;
+
+        JSON.parse(subFunction('{}'))
+          .should.deep.equal({
+            directories: {
+              lib: 'lib',
+              src: 'src',
+            },
+            devDependencies: {
+              babel: '^5.8.34',
+            },
+            dependencies: {
+              'babel-runtime': '^6.3.19',
+            },
+            babel: {
+              compact: false,
+              ignore: 'node_modules',
+              sourceMaps: 'inline',
+              optional: [ 'runtime' ],
+            },
+            scripts: {
+              'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
+            },
+          });
+      });
+
     });
 
     describe('with babelVersion 6', () => {
@@ -328,6 +358,39 @@ describe('provisionNpmBabel', () => {
             },
             babel: {
               presets: [ 'es2015', 'stage-2' ],
+              compact: false,
+              ignore: 'node_modules',
+              sourceMaps: 'inline',
+            },
+            scripts: {
+              'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
+            },
+          });
+      });
+
+      it('adds runtime plugin when `babelRuntime` is truthy', () => {
+        subFunction = provisionNpmBabel({
+          babelRuntime: true,
+        })['package.json'].contents;
+
+        JSON.parse(subFunction('{}'))
+          .should.deep.equal({
+            directories: {
+              lib: 'lib',
+              src: 'src',
+            },
+            dependencies: {
+              'babel-runtime': '^6.3.19',
+            },
+            devDependencies: {
+              'babel-cli': '^6.5.1',
+              'babel-core': '^6.5.2',
+              'babel-preset-es2015': '^6.5.0',
+              'babel-plugin-transform-runtime': '^6.5.2',
+            },
+            babel: {
+              presets: [ 'es2015' ],
+              plugins: [ 'transform-runtime' ],
               compact: false,
               ignore: 'node_modules',
               sourceMaps: 'inline',

@@ -3,12 +3,33 @@ import defaultsDeep from 'lodash.defaultsdeep';
 import jsonFile from 'packagesmith.formats.json';
 import { runProvisionerSet } from 'packagesmith';
 import sortPackageJson from 'sort-package-json';
+import unique from 'lodash.uniq';
 const babelVersionFive = 5;
+function configureBabelFive(packageJson, babelStage, babelRuntime) {
+  packageJson.devDependencies.babel = '^5.8.34';
+  if (typeof babelStage === 'number') {
+    packageJson.babel.stage = babelStage;
+  }
+  if (babelRuntime) {
+    packageJson.babel.optional = unique([ ...(packageJson.babel.optional || []), 'runtime' ]);
+    packageJson.dependencies = packageJson.dependencies || {};
+    packageJson.dependencies['babel-runtime'] = '^6.3.19';
+  }
+}
+function defaultBabelPresets(stage) {
+  const presets = { 'es2015': '^6.5.0' };
+  if (typeof stage === 'number') {
+    presets[`stage-${ stage }`] = '^6.5.0';
+  }
+  return presets;
+}
+
 export function provisionNpmBabel({
   babelConfig,
   scriptName = 'prepublish',
   babelVersion,
   babelStage,
+  babelRuntime = false,
   babelPlugins = {},
   babelPresets = null,
 } = {}) {
@@ -28,10 +49,7 @@ export function provisionNpmBabel({
           },
         };
         if (babelVersion === babelVersionFive) {
-          packageJson.devDependencies.babel = '^5.8.34';
-          if (typeof babelStage === 'number') {
-            packageJson.babel.stage = babelStage;
-          }
+          configureBabelFive(packageJson, babelStage, babelRuntime);
         } else {
           if ('babel' in packageJson.devDependencies) {
             Reflect.deleteProperty(packageJson.devDependencies, 'babel');
@@ -40,10 +58,12 @@ export function provisionNpmBabel({
             Reflect.deleteProperty(packageJson.babel, 'stage');
           }
           if (!babelPresets) {
-            babelPresets = { 'es2015': '^6.5.0' };
-            if (typeof babelStage === 'number') {
-              babelPresets[`stage-${ babelStage }`] = '^6.5.0';
-            }
+            babelPresets = defaultBabelPresets(babelStage);
+          }
+          if (babelRuntime) {
+            packageJson.dependencies = packageJson.dependencies || {};
+            packageJson.dependencies['babel-runtime'] = packageJson.dependencies['babel-runtime'] || '^6.3.19';
+            babelPlugins['transform-runtime'] = babelPlugins['transform-runtime'] || '^6.5.2';
           }
           packageJson.devDependencies['babel-cli'] = '^6.5.1';
           packageJson.devDependencies['babel-core'] = '^6.5.2';
