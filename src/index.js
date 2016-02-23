@@ -25,6 +25,16 @@ function defaultBabelPresets(stage) {
   return presets;
 }
 
+function determineExistingBabelConfig(existingPackageJson) {
+  if ('babel' in (existingPackageJson.devDependencies || {})) {
+    delete existingPackageJson.devDependencies.babel;
+    const babelStage = (existingPackageJson.babel || {}).stage;
+    delete existingPackageJson.babel.stage;
+    return { babelStage };
+  }
+  return {};
+}
+
 function configurePlugins(packageJson, babelPlugins) {
   const plugins = Object.keys(babelPlugins).map((plugin) => {
     const shorthand = plugin.replace(/^babel-plugin-/, '');
@@ -65,11 +75,8 @@ export function provisionNpmBabel({
           configureBabelFive(packageJson, babelStage, babelRuntime);
         } else {
           // Detect and remove old babel 5 config
-          if ('babel' in (contents.devDependencies || {})) {
-            delete contents.devDependencies.babel;
-            babelStage = contents.babel.stage;
-            delete contents.babel.stage;
-          }
+          const existingConfig = determineExistingBabelConfig(contents);
+          babelStage = existingConfig.babelStage || babelStage;
           if (!babelPresets) {
             babelPresets = defaultBabelPresets(babelStage);
           }
