@@ -26,13 +26,15 @@ function defaultBabelPresets(stage) {
 }
 
 function determineExistingBabelConfig(existingPackageJson) {
+  const config = {};
   if ('babel' in (existingPackageJson.devDependencies || {})) {
     delete existingPackageJson.devDependencies.babel;
-    const babelStage = (existingPackageJson.babel || {}).stage;
-    delete existingPackageJson.babel.stage;
-    return { babelStage };
+    if ('stage' in (existingPackageJson.babel || {})) {
+      config.babelStage = (existingPackageJson.babel || {}).stage;
+      delete existingPackageJson.babel.stage;
+    }
   }
-  return {};
+  return config;
 }
 
 function configurePlugins(packageJson, babelPlugins) {
