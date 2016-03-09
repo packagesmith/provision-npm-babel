@@ -20,7 +20,7 @@ function configureBabelFive(packageJson, babelStage, babelRuntime) {
 function defaultBabelPresets(stage) {
   const presets = { 'es2015': versions.six['babel-preset-es2015'] };
   if (typeof stage === 'number') {
-    presets[`stage-${ stage }`] = versions.six['babel-preset-es2015'];
+    presets[`stage-${ stage }`] = versions.six[`babel-preset-stage-${ stage }`];
   }
   return presets;
 }
