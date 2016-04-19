@@ -3,18 +3,25 @@ import defaultsDeep from 'lodash.defaultsdeep';
 import jsonFile from 'packagesmith.formats.json';
 import { runProvisionerSet } from 'packagesmith';
 import sortPackageJson from 'sort-package-json';
+import { sortRange as sortSemverRanges } from 'semver-addons';
 import unique from 'lodash.uniq';
 import versions from '../versions';
 const babelVersionFive = 5;
 function configureBabelFive(packageJson, babelStage, babelRuntime) {
-  packageJson.devDependencies.babel = versions.five.babel;
+  packageJson.devDependencies.babel = sortSemverRanges(
+    versions.five.babel,
+    packageJson.devDependencies.babel || '0.0.0'
+  ).pop();
   if (typeof babelStage === 'number') {
     packageJson.babel.stage = babelStage;
   }
   if (babelRuntime) {
     packageJson.babel.optional = unique([ ...(packageJson.babel.optional || []), 'runtime' ]);
     packageJson.dependencies = packageJson.dependencies || {};
-    packageJson.dependencies['babel-runtime'] = versions.five['babel-runtime'];
+    packageJson.dependencies['babel-runtime'] = sortSemverRanges(
+      versions.five['babel-runtime'],
+      packageJson.dependencies['babel-runtime'] || '0.0.0'
+    ).pop();
   }
 }
 
@@ -30,7 +37,10 @@ function configurePlugins(packageJson, babelPlugins) {
   const plugins = Object.keys(babelPlugins).map((plugin) => {
     const shorthand = plugin.replace(/^babel-plugin-/, '');
     const longhand = `babel-plugin-${ shorthand }`;
-    packageJson.devDependencies[longhand] = babelPlugins[plugin];
+    packageJson.devDependencies[longhand] = sortSemverRanges(
+      babelPlugins[plugin],
+      packageJson.devDependencies[longhand] || '0.0.0'
+    ).pop();
     return shorthand;
   });
   if (plugins.length) {
@@ -59,13 +69,22 @@ function configureBabelSix(packageJson, babelStage, babelPresets, babelPlugins, 
       babelPlugins['transform-runtime'] = versions.six['babel-plugin-transform-runtime'];
     }
   }
-  packageJson.devDependencies['babel-cli'] = versions.six['babel-cli'];
-  packageJson.devDependencies['babel-core'] = versions.six['babel-core'];
+  packageJson.devDependencies['babel-cli'] = sortSemverRanges(
+    versions.six['babel-cli'],
+    packageJson.devDependencies['babel-cli'] || '0.0.0'
+  ).pop();
+  packageJson.devDependencies['babel-core'] = sortSemverRanges(
+    versions.six['babel-core'],
+    packageJson.devDependencies['babel-core'] || '0.0.0'
+  ).pop();
   packageJson.babel.presets = [];
   Object.keys(babelPresets).forEach((preset) => {
     const shorthand = preset.replace(/^babel-preset-/, '');
     const longhand = `babel-preset-${ shorthand }`;
-    packageJson.devDependencies[longhand] = babelPresets[preset];
+    packageJson.devDependencies[longhand] = sortSemverRanges(
+      babelPresets[preset],
+      packageJson.devDependencies[longhand] || '0.0.0'
+    ).pop();
     packageJson.babel.presets.push(shorthand);
   });
   configurePlugins(packageJson, babelPlugins);

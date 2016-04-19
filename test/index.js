@@ -48,6 +48,26 @@ describe('provisionNpmBabel', () => {
           });
       });
 
+      it('overwrites already existing older versions of babel', () => {
+        const packageJson = JSON.stringify({
+          devDependencies: {
+            babel: '^1.2.3',
+          },
+        });
+        JSON.parse(subFunction(packageJson))
+          .should.have.deep.property('devDependencies.babel', versions.five.babel || 'NO VERSION');
+      });
+
+      it('does not overwrite already existing newer versions of babel', () => {
+        const packageJson = JSON.stringify({
+          devDependencies: {
+            babel: '^999.999.999',
+          },
+        });
+        JSON.parse(subFunction(packageJson))
+          .should.have.deep.property('devDependencies.babel', '^999.999.999');
+      });
+
       it('does not override already present directories values', () => {
         JSON.parse(subFunction('{"directories":{"lib":"foo","src":"bar"}}'))
           .should.deep.equal({
@@ -150,34 +170,59 @@ describe('provisionNpmBabel', () => {
           });
       });
 
-      it('adds runtime option when `babelRuntime` is truthy', () => {
-        subFunction = provisionNpmBabel({
-          babelVersion: 5,
-          babelRuntime: true,
-        })['package.json'].contents;
+      describe('babel-runtime', () => {
+        beforeEach(() => {
+          subFunction = provisionNpmBabel({
+            babelVersion: 5,
+            babelRuntime: true,
+          })['package.json'].contents;
+        });
 
-        JSON.parse(subFunction('{}'))
-          .should.deep.equal({
-            directories: {
-              lib: 'lib',
-              src: 'src',
-            },
-            devDependencies: {
-              babel: versions.five.babel || 'NO VERSION',
-            },
+        it('adds runtime option when `babelRuntime` is truthy', () => {
+          JSON.parse(subFunction('{}'))
+            .should.deep.equal({
+              directories: {
+                lib: 'lib',
+                src: 'src',
+              },
+              devDependencies: {
+                babel: versions.five.babel || 'NO VERSION',
+              },
+              dependencies: {
+                'babel-runtime': versions.five['babel-runtime'] || 'NO VERSION',
+              },
+              babel: {
+                compact: false,
+                ignore: 'node_modules',
+                sourceMaps: 'inline',
+                optional: [ 'runtime' ],
+              },
+              scripts: {
+                'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
+              },
+            });
+        });
+
+        it('overwrites already existing older versions of babel-runtime', () => {
+          const packageJson = JSON.stringify({
             dependencies: {
-              'babel-runtime': versions.five['babel-runtime'] || 'NO VERSION',
-            },
-            babel: {
-              compact: false,
-              ignore: 'node_modules',
-              sourceMaps: 'inline',
-              optional: [ 'runtime' ],
-            },
-            scripts: {
-              'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
+              'babel-runtime': '^1.2.3',
             },
           });
+          JSON.parse(subFunction(packageJson))
+          .should.have.deep.property('dependencies.babel-runtime', versions.five['babel-runtime'] || 'NO VERSION');
+        });
+
+        it('does not overwrite already existing newer versions of babel-runtime', () => {
+          const packageJson = JSON.stringify({
+            dependencies: {
+              'babel-runtime': '^999.999.999',
+            },
+          });
+          JSON.parse(subFunction(packageJson))
+          .should.have.deep.property('dependencies.babel-runtime', '^999.999.999');
+        });
+
       });
 
     });
@@ -216,6 +261,69 @@ describe('provisionNpmBabel', () => {
               'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
             },
           });
+      });
+
+      it('overwrites already existing older versions of babel-core', () => {
+        const packageJson = JSON.stringify({
+          devDependencies: {
+            'babel-core': '^1.2.3',
+          },
+        });
+        JSON.parse(subFunction(packageJson))
+          .should.have.deep.property('devDependencies.babel-core', versions.six['babel-core'] || 'NO VERSION');
+      });
+
+      it('does not overwrite already existing newer versions of babel', () => {
+        const packageJson = JSON.stringify({
+          devDependencies: {
+            'babel-core': '^999.999.999',
+          },
+        });
+        JSON.parse(subFunction(packageJson))
+          .should.have.deep.property('devDependencies.babel-core', '^999.999.999');
+      });
+
+      it('overwrites already existing older versions of babel-cli', () => {
+        const packageJson = JSON.stringify({
+          devDependencies: {
+            'babel-cli': '^1.2.3',
+          },
+        });
+        JSON.parse(subFunction(packageJson))
+          .should.have.deep.property('devDependencies.babel-cli', versions.six['babel-cli'] || 'NO VERSION');
+      });
+
+      it('does not overwrite already existing newer versions of babel', () => {
+        const packageJson = JSON.stringify({
+          devDependencies: {
+            'babel-cli': '^999.999.999',
+          },
+        });
+        JSON.parse(subFunction(packageJson))
+          .should.have.deep.property('devDependencies.babel-cli', '^999.999.999');
+      });
+
+      it('overwrites already existing older versions of babel-preset-es2015', () => {
+        const packageJson = JSON.stringify({
+          devDependencies: {
+            'babel-preset-es2015': '^1.2.3',
+          },
+        });
+        JSON.parse(subFunction(packageJson))
+          .should.have.deep.property(
+            'devDependencies.babel-preset-es2015',
+            versions.six['babel-preset-es2015'] || 'NO VERSION'
+          );
+      });
+
+      it('does not overwrite already existing newer versions of babel', () => {
+        const packageJson = JSON.stringify({
+          devDependencies: {
+            'babel-preset-es2015': '^999.999.999',
+          },
+        });
+        JSON.parse(subFunction(packageJson))
+          .should.have.deep.property('devDependencies.babel-preset-es2015', '^999.999.999');
       });
 
       it('adds babel directives to json', () => {
@@ -305,6 +413,26 @@ describe('provisionNpmBabel', () => {
               'prepublish': 'babel $npm_package_directories_src -d $npm_package_directories_lib',
             },
           });
+      });
+
+      it('does not override `presets` from `babelPresets` which are older', () => {
+        subFunction = provisionNpmBabel({
+          babelVersion: 6,
+          babelPresets: {
+            'es2015': '^1.2.3',
+            'stage-0': '^4.5.6',
+            'react': '^7.8.9',
+          },
+          babelConfig: {
+            compact: true,
+          },
+        })['package.json'].contents;
+
+        JSON.parse(subFunction(JSON.stringify({
+          devDependencies: {
+            'babel-preset-es2015': '^99.99.99',
+          },
+        }))).should.have.deep.property('devDependencies.babel-preset-es2015', '^99.99.99');
       });
 
       it('overrides `plugins` with `babelPlugins` option', () => {
