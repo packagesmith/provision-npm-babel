@@ -46,7 +46,7 @@
     }
   },
   "dependencies": {
-    "lodash.defaultsdeep": "^4.3.2",
+    "lodash.defaultsdeep": "^4.5.1",
     "lodash.uniq": "^4.2.0",
     "packagesmith": "^1.1.2",
     "packagesmith.formats.json": "^1.0.1",
